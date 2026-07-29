@@ -45,7 +45,6 @@
             <nav class="flex gap-6 text-sm font-medium">
                 <a href="#home" class="hover:text-blue-600 transition-colors">Home</a>
                 <a href="#itinerary" class="hover:text-blue-600 transition-colors">Itinerary</a>
-                <a href="#gallery" class="hover:text-blue-600 transition-colors">Full Gallery</a>
             </nav>
         </div>
     </header>
@@ -59,7 +58,14 @@
             </div>
 
             <!-- Interactive Leaflet Map -->
-            <div id="europe-map" class="h-[500px] rounded-3xl shadow-xl mb-12 border border-gray-200 overflow-hidden"></div>
+            <div class="relative mb-12">
+                <div id="europe-map" class="h-[500px] rounded-3xl shadow-xl border border-gray-200 overflow-hidden"></div>
+                <button id="recenter-btn" onclick="recenterMap()" 
+                    class="absolute top-4 right-4 z-[1000] bg-white hover:bg-blue-50 text-gray-800 font-medium py-2 px-4 rounded-xl shadow-lg border border-gray-200 flex items-center gap-2 transition-all">
+                    <i class="fas fa-crosshairs"></i>
+                    Recenter Map
+                </button>
+            </div>
             
             <!-- City Cards -->
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cities-grid">
@@ -83,15 +89,6 @@
                 <!-- Gallery populated by JS -->
                 <div id="photo-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
                     <!-- Photos go here -->
-                </div>
-                
-                <div class="mt-8 p-6 bg-blue-50 rounded-2xl">
-                    <h4 class="font-medium mb-2 flex items-center gap-2">
-                        <i class="fas fa-cloud-upload-alt"></i> 
-                        Photo Storage
-                    </h4>
-                    <p class="text-sm text-gray-600 mb-4">Upload your high-res photos here for this city. Replace placeholder URLs below with your actual image links.</p>
-                    <div id="storage-link" class="text-blue-600 hover:underline"></div>
                 </div>
             </div>
         </div>
@@ -161,7 +158,6 @@
     <footer class="bg-gray-900 text-white py-12">
         <div class="max-w-7xl mx-auto px-6 text-center">
             <p class="mb-2">Made with ❤️ for our trip memories • July 2026</p>
-            <p class="text-sm text-gray-400">To customize: Edit the JavaScript data array with your real photo URLs and storage links.</p>
         </div>
     </footer>
 
@@ -174,7 +170,6 @@
                 country: "Netherlands 🇳🇱",
                 flag: "🇳🇱",
                 color: "from-orange-400 to-red-500",
-                storage: "https://drive.google.com/drive/folders/1QDM4RTP742REwrQUAI1rnfiDLd6RR1kW?usp=drive_link",
                 photos: [
                     { url: "photos/amsterdam/IMG_3962.jpeg", caption: "Boats, Bikes, Canals & Cathedrals" }
                 ]
@@ -185,11 +180,7 @@
                 country: "Germany 🇩🇪",
                 flag: "🇩🇪",
                 color: "from-yellow-400 to-red-500",
-                storage: "https://drive.google.com/drive/folders/1eWXoeIk3Zk8RsCqUcuUSH-z3EKdTLcU6?usp=drive_link",
-                photos: [
-                    { url: "photos/schloss-frankenberg/Schloss Frankenberg.jpg", caption: "Schloss Frankenberg Castle" },
-                    { url: "photos/schloss-frankenberg/IMG_8481.JPEG", caption: "Castle Chapel" }
-                ]
+                photos: []
             },
             {
                 id: "salzburg",
@@ -197,11 +188,7 @@
                 country: "Austria 🇦🇹",
                 flag: "🇦🇹",
                 color: "from-red-400 to-white",
-                storage: "https://drive.google.com/drive/folders/1779GEjAY2z6eeKajHDuxbAc8kUvsLrDa?usp=drive_link",
-                photos: [
-                    { url: "https://picsum.photos/id/1016/600/400", caption: "Mirabell Palace" },
-                    { url: "https://picsum.photos/id/133/600/400", caption: "Hohensalzburg Fortress" }
-                ]
+                photos: []
             },
             {
                 id: "venice",
@@ -209,12 +196,7 @@
                 country: "Italy 🇮🇹",
                 flag: "🇮🇹",
                 color: "from-green-400 to-red-500",
-                storage: "https://drive.google.com/drive/folders/1zYVA7Eoq-HpysGJGU2BMH2R2piUeWMVL?usp=drive_link",
-                photos: [
-                    { url: "https://picsum.photos/id/1018/600/400", caption: "Grand Canal" },
-                    { url: "https://picsum.photos/id/251/600/400", caption: "St. Mark's Square" },
-                    { url: "https://picsum.photos/id/292/600/400", caption: "Gondola ride" }
-                ]
+                photos: []
             },
             {
                 id: "zurich",
@@ -222,12 +204,7 @@
                 country: "Switzerland 🇨🇭",
                 flag: "🇨🇭",
                 color: "from-red-500 to-white",
-                storage: "https://drive.google.com/drive/folders/1GU-TpeZVkr4dXQVQGYvI4zsiQFwzj3dC?usp=drive_link",
-                photos: [
-                    { url: "https://picsum.photos/id/133/600/400", caption: "Lake Zurich" },
-                    { url: "https://picsum.photos/id/160/600/400", caption: "Bernina Express views" },
-                    { url: "https://picsum.photos/id/201/600/400", caption: "Alpine peaks" }
-                ]
+                photos: []
             },
             {
                 id: "tirano",
@@ -235,12 +212,7 @@
                 country: "Italy 🇮🇹",
                 flag: "🇮🇹",
                 color: "from-green-500 to-red-400",
-                storage: "https://drive.google.com/drive/folders/1lr0Dp2IfrVIHBv_31rqiWtWgdtjNmuWw?usp=drive_link",
-                photos: [
-                    { url: "https://picsum.photos/id/1018/600/400", caption: "Tirano station" },
-                    { url: "https://picsum.photos/id/160/600/400", caption: "Bernina Express arrival" },
-                    { url: "https://picsum.photos/id/292/600/400", caption: "Town of Tirano" }
-                ]
+                photos: []
             },
             {
                 id: "paris",
@@ -248,13 +220,7 @@
                 country: "France 🇫🇷",
                 flag: "🇫🇷",
                 color: "from-blue-400 to-red-500",
-                storage: "https://drive.google.com/drive/folders/1wXMUc4bFskjEaOxZowVPeP9TbmsjqhRF?usp=drive_link",
-                photos: [
-                    { url: "https://picsum.photos/id/1015/600/400", caption: "Eiffel Tower at night" },
-                    { url: "https://picsum.photos/id/133/600/400", caption: "Louvre Museum" },
-                    { url: "https://picsum.photos/id/251/600/400", caption: "Notre-Dame" },
-                    { url: "https://picsum.photos/id/292/600/400", caption: "Seine River cruise" }
-                ]
+                photos: []
             }
         ];
 
@@ -288,26 +254,27 @@
             const photoGrid = document.getElementById('photo-grid');
             photoGrid.innerHTML = '';
             
-            city.photos.forEach(photo => {
-                const div = document.createElement('div');
-                div.className = 'group relative overflow-hidden rounded-2xl';
-                div.innerHTML = `
-                    <img src="${photo.url}" class="gallery-img w-full aspect-video object-cover" alt="${photo.caption}">
-                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white text-sm opacity-0 group-hover:opacity-100 transition-all">
-                        ${photo.caption}
+            if (city.photos.length === 0) {
+                photoGrid.innerHTML = `
+                    <div class="col-span-full text-center text-gray-500 py-12">
+                        <i class="fas fa-images text-4xl mb-4 opacity-40"></i>
+                        <p>No photos added yet for ${city.name}.</p>
+                        <p class="text-sm mt-2">Add images to the <code>photos/${city.id}/</code> folder in the repository.</p>
                     </div>
                 `;
-                photoGrid.appendChild(div);
-            });
-            
-            // Storage info
-            const storageDiv = document.getElementById('storage-link');
-            storageDiv.innerHTML = `
-                <a href="${city.storage}" target="_blank" class="inline-flex items-center gap-2 hover:text-blue-700">
-                    <i class="fas fa-folder-open"></i> 
-                    ${city.name} photos
-                </a>
-            `;
+            } else {
+                city.photos.forEach(photo => {
+                    const div = document.createElement('div');
+                    div.className = 'group relative overflow-hidden rounded-2xl';
+                    div.innerHTML = `
+                        <img src="${photo.url}" class="gallery-img w-full aspect-video object-cover" alt="${photo.caption}">
+                        <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white text-sm opacity-0 group-hover:opacity-100 transition-all">
+                            ${photo.caption}
+                        </div>
+                    `;
+                    photoGrid.appendChild(div);
+                });
+            }
             
             document.getElementById('city-modal').classList.remove('hidden');
             document.getElementById('city-modal').classList.add('flex');
@@ -319,17 +286,27 @@
             modal.classList.remove('flex');
         }
 
+        // Global map references for recenter
+        let mapInstance = null;
+        let allMarkerCoords = [];
+
+        function recenterMap() {
+            if (mapInstance && allMarkerCoords.length > 0) {
+                mapInstance.fitBounds(allMarkerCoords, { padding: [40, 40] });
+            }
+        }
+
         // Initialize Map and Cities
         window.onload = function() {
             renderCities();
             
             // Leaflet Map
-            const map = L.map('europe-map');
+            mapInstance = L.map('europe-map');
             
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors',
                 maxZoom: 18,
-            }).addTo(map);
+            }).addTo(mapInstance);
 
             // City markers with popups
             const cityMarkers = {
@@ -342,23 +319,23 @@
                 paris: { coords: [48.8566, 2.3522], name: "Paris" }
             };
 
-            const allCoords = [];
+            allMarkerCoords = [];
 
             Object.keys(cityMarkers).forEach(key => {
                 const markerData = cityMarkers[key];
                 const cityData = cities.find(c => c.id === key);
                 
                 if (cityData) {
-                    const marker = L.marker(markerData.coords).addTo(map);
-                    marker.bindPopup(`
-                        <b>${markerData.name}</b><br>
-                        <a href="#" onclick="showCityModalFromMap('${key}'); return false;" class="text-blue-600 hover:underline">View Photos →</a>
-                    `);
-                    allCoords.push(markerData.coords);
+                    const marker = L.marker(markerData.coords).addTo(mapInstance);
+                    marker.bindTooltip(markerData.name, { permanent: false, direction: 'top' });
+                    marker.on('click', function() {
+                        showCityModalFromMap(key);
+                    });
+                    allMarkerCoords.push(markerData.coords);
                 }
             });
 
-            // Bernina Express route line (Zurich area → Tirano)
+            // Bernina Express scenic segment (Zurich area → Tirano)
             const berninaRoute = [
                 [47.3769, 8.5417],   // Zurich
                 [46.8520, 9.5320],   // Chur area
@@ -368,18 +345,18 @@
             ];
 
             const berninaLine = L.polyline(berninaRoute, {
-                color: '#7c3aed',      // purple
+                color: '#7c3aed',
                 weight: 5,
                 opacity: 0.85,
                 dashArray: '12, 8',
                 lineCap: 'round'
-            }).addTo(map);
+            }).addTo(mapInstance);
 
             berninaLine.bindPopup("<b>Bernina Express Route</b><br>Zurich → Tirano (Italy)");
 
-            // Fit the map so ALL 7 locations are visible on first load
-            if (allCoords.length > 0) {
-                map.fitBounds(allCoords, { padding: [40, 40] });
+            // Fit the map so ALL locations are visible on first load
+            if (allMarkerCoords.length > 0) {
+                mapInstance.fitBounds(allMarkerCoords, { padding: [40, 40] });
             }
 
             // Keyboard escape
