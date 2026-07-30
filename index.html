@@ -6,33 +6,21 @@
     <title>Our 2026 European Adventure</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Leaflet CSS & JS for map -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <style>
-        body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
-        }
-        .country-card {
-            transition: all 0.3s ease;
-        }
-        .country-card:hover {
-            transform: scale(1.05);
-            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-        }
-        .gallery-img {
-            transition: transform 0.3s ease;
-        }
-        .gallery-img:hover {
-            transform: scale(1.05);
-        }
-        .map-container {
-            background: linear-gradient(to bottom, #e0f2fe, #bae6fd);
-            position: relative;
-        }
-        #europe-map {
-            z-index: 10;
-        }
+        body { font-family: 'Segoe UI', system-ui, sans-serif; }
+        .country-card { transition: all 0.3s ease; }
+        .country-card:hover { transform: scale(1.05); box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1); }
+        .gallery-img { transition: transform 0.3s ease; }
+        .gallery-img:hover { transform: scale(1.05); }
+        .map-container { background: linear-gradient(to bottom, #e0f2fe, #bae6fd); position: relative; }
+        #europe-map { z-index: 10; }
+        /* Custom hover popup styling */
+        .leaflet-popup-content-wrapper { border-radius: 12px; overflow: hidden; padding: 0; }
+        .leaflet-popup-content { margin: 0; width: 200px !important; }
+        .pin-preview img { width: 100%; height: 120px; object-fit: cover; display: block; }
+        .pin-preview .label { padding: 8px 12px; font-weight: 600; font-size: 14px; background: white; }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -54,27 +42,22 @@
             <div class="text-center mb-12">
                 <h2 class="text-5xl font-bold text-gray-800 mb-4">Our 2026 European Adventure Route</h2>
                 <p class="text-xl text-gray-600 max-w-2xl mx-auto">Netherlands • Germany • Austria • Italy • Switzerland • France</p>
-                <p class="text-lg text-gray-500 mt-2">Click markers on the map or cards below to view photos</p>
+                <p class="text-lg text-gray-500 mt-2">Hover a pin for a preview • Click a pin to open the photo folder</p>
             </div>
 
-            <!-- Interactive Leaflet Map -->
             <div class="relative mb-12">
                 <div id="europe-map" class="h-[500px] rounded-3xl shadow-xl border border-gray-200 overflow-hidden"></div>
-                <button id="recenter-btn" onclick="recenterMap()" 
+                <button onclick="recenterMap()" 
                     class="absolute top-4 right-4 z-[1000] bg-white hover:bg-blue-50 text-gray-800 font-medium py-2 px-4 rounded-xl shadow-lg border border-gray-200 flex items-center gap-2 transition-all">
-                    <i class="fas fa-crosshairs"></i>
-                    Recenter Map
+                    <i class="fas fa-crosshairs"></i> Recenter Map
                 </button>
             </div>
             
-            <!-- City Cards -->
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cities-grid">
-                <!-- Cities will be populated by JS -->
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="cities-grid"></div>
         </div>
     </section>
 
-    <!-- City Modal -->
+    <!-- City Modal (still used by the city cards) -->
     <div id="city-modal" class="hidden fixed inset-0 bg-black/70 flex items-center justify-center z-50">
         <div class="bg-white rounded-3xl max-w-5xl w-full mx-4 max-h-[90vh] overflow-hidden">
             <div class="flex justify-between items-center p-6 border-b">
@@ -84,12 +67,8 @@
                 </div>
                 <button onclick="closeModal()" class="text-3xl text-gray-400 hover:text-gray-600">×</button>
             </div>
-            
-            <div class="p-6 overflow-y-auto max-h-[calc(90vh-80px)]" id="modal-content">
-                <!-- Gallery populated by JS -->
-                <div id="photo-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4">
-                    <!-- Photos go here -->
-                </div>
+            <div class="p-6 overflow-y-auto max-h-[calc(90vh-80px)]">
+                <div id="photo-grid" class="grid grid-cols-2 md:grid-cols-3 gap-4"></div>
             </div>
         </div>
     </div>
@@ -103,7 +82,7 @@
                         <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">🇳🇱</div>
                         <div>
                             <h4 class="font-semibold">Amsterdam, Netherlands</h4>
-                            <p class="text-sm text-gray-500">Canals, bikes &amp; vibrant culture</p>
+                            <p class="text-sm text-gray-500">Canals, bikes & vibrant culture</p>
                         </div>
                     </div>
                     <div class="flex gap-6">
@@ -117,14 +96,14 @@
                         <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">🇦🇹</div>
                         <div>
                             <h4 class="font-semibold">Salzburg, Austria</h4>
-                            <p class="text-sm text-gray-500">Mozart's birthplace &amp; alpine views</p>
+                            <p class="text-sm text-gray-500">Mozart's birthplace & alpine views</p>
                         </div>
                     </div>
                     <div class="flex gap-6">
                         <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">🇮🇹</div>
                         <div>
                             <h4 class="font-semibold">Venice, Italy</h4>
-                            <p class="text-sm text-gray-500">Gondolas &amp; timeless romance</p>
+                            <p class="text-sm text-gray-500">Gondolas & timeless romance</p>
                         </div>
                     </div>
                 </div>
@@ -132,8 +111,8 @@
                     <div class="flex gap-6">
                         <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">🇨🇭</div>
                         <div>
-                            <h4 class="font-semibold">Zurich &amp; Bernina Express, Switzerland</h4>
-                            <p class="text-sm text-gray-500">Lakes, mountains &amp; scenic train</p>
+                            <h4 class="font-semibold">Zurich & Bernina Express, Switzerland</h4>
+                            <p class="text-sm text-gray-500">Lakes, mountains & scenic train</p>
                         </div>
                     </div>
                     <div class="flex gap-6">
@@ -147,7 +126,7 @@
                         <div class="w-12 h-12 bg-orange-100 rounded-2xl flex items-center justify-center flex-shrink-0">🇫🇷</div>
                         <div>
                             <h4 class="font-semibold">Paris, France</h4>
-                            <p class="text-sm text-gray-500">Eiffel Tower, art &amp; cuisine</p>
+                            <p class="text-sm text-gray-500">Eiffel Tower, art & cuisine</p>
                         </div>
                     </div>
                 </div>
@@ -157,12 +136,11 @@
 
     <footer class="bg-gray-900 text-white py-12">
         <div class="max-w-7xl mx-auto px-6 text-center">
-            <p class="mb-2">Made with ❤️ for our trip memories • July 2026</p>
+            <p>Made with ❤️ for our trip memories • July 2026</p>
         </div>
     </footer>
 
     <script>
-        // Trip data
         const cities = [
             {
                 id: "amsterdam",
@@ -231,18 +209,14 @@
             }
         ];
 
-        // Render city cards
         function renderCities() {
             const grid = document.getElementById('cities-grid');
             grid.innerHTML = '';
-            
             cities.forEach(city => {
                 const card = document.createElement('div');
                 card.className = `country-card bg-white rounded-3xl overflow-hidden cursor-pointer shadow`;
                 card.innerHTML = `
-                    <div class="h-48 bg-gradient-to-br ${city.color} flex items-center justify-center text-8xl">
-                        ${city.flag}
-                    </div>
+                    <div class="h-48 bg-gradient-to-br ${city.color} flex items-center justify-center text-8xl">${city.flag}</div>
                     <div class="p-6">
                         <h3 class="text-2xl font-semibold mb-1">${city.name}</h3>
                         <p class="text-gray-500">${city.country}</p>
@@ -253,22 +227,19 @@
             });
         }
 
-        // Show modal with photos
         function showCityModal(city) {
             document.getElementById('modal-city').textContent = city.name;
             document.getElementById('modal-country').textContent = city.country;
-            
             const photoGrid = document.getElementById('photo-grid');
             photoGrid.innerHTML = '';
-            
-            if (city.photos.length === 0) {
+
+            if (!city.photos || city.photos.length === 0) {
                 photoGrid.innerHTML = `
                     <div class="col-span-full text-center text-gray-500 py-12">
                         <i class="fas fa-images text-4xl mb-4 opacity-40"></i>
                         <p>No photos added yet for ${city.name}.</p>
-                        <p class="text-sm mt-2">Add images to the <code>photos/${city.id}/</code> folder in the repository.</p>
-                    </div>
-                `;
+                        <p class="text-sm mt-2">Add images to the photos/${city.id}/ folder.</p>
+                    </div>`;
             } else {
                 city.photos.forEach(photo => {
                     const div = document.createElement('div');
@@ -278,17 +249,11 @@
                         <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-4 text-white text-sm opacity-0 group-hover:opacity-100 transition-all">
                             ${photo.caption}
                             <span class="block text-xs mt-1 opacity-80"><i class="fas fa-folder-open"></i> Open full album</span>
-                        </div>
-                    `;
-                    div.onclick = () => {
-                        if (city.storage) {
-                            window.open(city.storage, '_blank');
-                        }
-                    };
+                        </div>`;
+                    div.onclick = () => { if (city.storage) window.open(city.storage, '_blank'); };
                     photoGrid.appendChild(div);
                 });
             }
-            
             document.getElementById('city-modal').classList.remove('hidden');
             document.getElementById('city-modal').classList.add('flex');
         }
@@ -299,7 +264,6 @@
             modal.classList.remove('flex');
         }
 
-        // Global map references for recenter
         let mapInstance = null;
         let allMarkerCoords = [];
 
@@ -309,19 +273,14 @@
             }
         }
 
-        // Initialize Map and Cities
         window.onload = function() {
             renderCities();
-            
-            // Leaflet Map
             mapInstance = L.map('europe-map');
-            
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; OpenStreetMap contributors',
                 maxZoom: 18,
             }).addTo(mapInstance);
 
-            // City markers with popups
             const cityMarkers = {
                 amsterdam: { coords: [52.3702, 4.8952], name: "Amsterdam" },
                 frankfurt: { coords: [50.1109, 8.6821], name: "Schloss Frankenberg" },
@@ -337,56 +296,59 @@
             Object.keys(cityMarkers).forEach(key => {
                 const markerData = cityMarkers[key];
                 const cityData = cities.find(c => c.id === key);
-                
-                if (cityData) {
-                    const marker = L.marker(markerData.coords).addTo(mapInstance);
-                    marker.bindTooltip(markerData.name, { permanent: false, direction: 'top' });
-                    marker.on('click', function() {
-                        showCityModalFromMap(key);
-                    });
-                    allMarkerCoords.push(markerData.coords);
+                if (!cityData) return;
+
+                const marker = L.marker(markerData.coords).addTo(mapInstance);
+
+                // Build hover preview content
+                let previewHtml = `<div class="pin-preview"><div class="label">${markerData.name}</div>`;
+                if (cityData.photos && cityData.photos.length > 0) {
+                    previewHtml += `<img src="${cityData.photos[0].url}" alt="${markerData.name}">`;
+                } else {
+                    previewHtml += `<div style="height:80px;background:#f3f4f6;display:flex;align-items:center;justify-content:center;color:#9ca3af;font-size:13px;">No photo yet</div>`;
                 }
+                previewHtml += `</div>`;
+
+                marker.bindPopup(previewHtml, {
+                    closeButton: false,
+                    offset: [0, -10],
+                    maxWidth: 220
+                });
+
+                // Hover → show preview
+                marker.on('mouseover', function () { this.openPopup(); });
+                marker.on('mouseout', function () { this.closePopup(); });
+
+                // Click → open Google Drive folder
+                marker.on('click', function () {
+                    if (cityData.storage) {
+                        window.open(cityData.storage, '_blank');
+                    }
+                });
+
+                allMarkerCoords.push(markerData.coords);
             });
 
-            // Bernina Express scenic segment (Zurich area → Tirano)
+            // Bernina Express line
             const berninaRoute = [
-                [47.3769, 8.5417],   // Zurich
-                [46.8520, 9.5320],   // Chur area
-                [46.4980, 9.8420],   // St. Moritz / Pontresina area
-                [46.4070, 10.0190],  // Bernina Pass area
-                [46.2167, 10.1667]   // Tirano
+                [47.3769, 8.5417],
+                [46.8520, 9.5320],
+                [46.4980, 9.8420],
+                [46.4070, 10.0190],
+                [46.2167, 10.1667]
             ];
+            L.polyline(berninaRoute, {
+                color: '#7c3aed', weight: 5, opacity: 0.85, dashArray: '12, 8', lineCap: 'round'
+            }).addTo(mapInstance).bindPopup("<b>Bernina Express Route</b><br>Zurich → Tirano");
 
-            const berninaLine = L.polyline(berninaRoute, {
-                color: '#7c3aed',
-                weight: 5,
-                opacity: 0.85,
-                dashArray: '12, 8',
-                lineCap: 'round'
-            }).addTo(mapInstance);
-
-            berninaLine.bindPopup("<b>Bernina Express Route</b><br>Zurich → Tirano (Italy)");
-
-            // Fit the map so ALL locations are visible on first load
             if (allMarkerCoords.length > 0) {
                 mapInstance.fitBounds(allMarkerCoords, { padding: [40, 40] });
             }
 
-            // Keyboard escape
             document.addEventListener('keydown', function(e) {
-                if (e.key === "Escape") {
-                    closeModal();
-                }
+                if (e.key === "Escape") closeModal();
             });
         };
-
-        // Helper to open modal from map
-        function showCityModalFromMap(cityId) {
-            const city = cities.find(c => c.id === cityId);
-            if (city) {
-                showCityModal(city);
-            }
-        }
     </script>
 </body>
 </html>
